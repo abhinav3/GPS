@@ -1,74 +1,120 @@
 package com.example.omsairam.gps;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.omsairam.gps.adapters.PlacesAutoCompleteAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.example.omsairam.gps.adapters.PlacesAutoCompleteAdapter;
+import com.example.omsairam.gps.listeners.RecyclerItemClickListener;
+import com.example.omsairam.gps.utility.Constants;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity
-        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+    protected GoogleApiClient mGoogleApiClient;
 
-    private final String LOG_TAG = "Debug";
-    private TextView txtOutput1;
-    private TextView txtAdd1;
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
+    private static final LatLngBounds BOUNDS_INDIA = new LatLngBounds(
+            new LatLng(-0, 0), new LatLng(0, 0));
 
+    private EditText mAutocompleteView;
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLinearLayoutManager;
+    private PlacesAutoCompleteAdapter mAutoCompleteAdapter;
+    ImageView delete;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        buildGoogleApiClient();
+        setContentView(R.layout.activity_search);
+        mAutocompleteView = (EditText)findViewById(R.id.autocomplete_places);
 
+        delete=(ImageView)findViewById(R.id.cross);
 
-        //Build the mGoogleApiClient.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
+        mAutoCompleteAdapter =  new PlacesAutoCompleteAdapter(this, R.layout.searchview_adapter,
+                mGoogleApiClient, BOUNDS_INDIA, null);
 
-        txtOutput1 = (TextView) findViewById(R.id.txtOutput);
-        txtAdd1=(TextView) findViewById(R.id.txtAdd);
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mRecyclerView=(RecyclerView)findViewById(R.id.recyclerView);
+        mLinearLayoutManager=new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView.setAdapter(mAutoCompleteAdapter);
+        delete.setOnClickListener(this);
+        mAutocompleteView.addTextChangedListener(new TextWatcher() {
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                if (!s.toString().equals("") && mGoogleApiClient.isConnected()) {
+                    mAutoCompleteAdapter.getFilter().filter(s.toString());
+                }else if(!mGoogleApiClient.isConnected()){
+                    Toast.makeText(getApplicationContext(), "1."+Constants.API_NOT_CONNECTED,Toast.LENGTH_SHORT).show();
+                    Log.e(Constants.PlacesTag,Constants.API_NOT_CONNECTED);
+                }
+
             }
-        });*/
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        final PlacesAutoCompleteAdapter.PlaceAutocomplete item = mAutoCompleteAdapter.getItem(position);
+                        final String placeId = String.valueOf(item.placeId);
+                        Log.i("TAG", "Autocomplete item selected: " + item.description);
+                        /*
+                             Issue a request to the Places Geo Data API to retrieve a Place object with additional details about the place.
+                         */
+
+                        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                                .getPlaceById(mGoogleApiClient, placeId);
+                        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
+                            @Override
+                            public void onResult(PlaceBuffer places) {
+                                if(places.getCount()==1){
+                                    //Do the things here on Click.....
+                                    Toast.makeText(getApplicationContext(),String.valueOf(places.get(0).getLatLng()),Toast.LENGTH_SHORT).show();
+                                }else {
+                                    Toast.makeText(getApplicationContext(),"2."+Constants.SOMETHING_WENT_WRONG,Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                        Log.i("TAG", "Clicked: " + item.description);
+                        Log.i("TAG", "Called getPlaceById to get Place details for " + item.placeId);
+                    }
+                })
+        );
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -87,81 +133,60 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //connect the mGoogleApiClient
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-
-        //Disconnect the mGoogleApiClient
-        mGoogleApiClient.disconnect();
-        super.onStop();
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .build();
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(10000);//Update location every 10 second.
-        mLocationRequest.setFastestInterval(5000);
-
-        /*Since SDK 23, you should/need to check the permission before you call Location API functionality. Here is an example of how to do it:*/
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            //return;
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-       /* LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);*/
-
+        Log.v("Google API Callback", "Connection Done");
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Toast.makeText(getApplicationContext(), "GoogleApiClient has been suspended", Toast.LENGTH_LONG).show();//not able to connect this time only.
-        Log.i(LOG_TAG,"GoogleApiClient has been suspended");
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.i(LOG_TAG, location.toString());
-        Toast.makeText(getApplicationContext(), "HI"+location.toString(), Toast.LENGTH_SHORT).show();
-        txtOutput1.setText("HI" + location.toString());
-
-        ////////////////////////////////////////////////////
-       /* String cityName=null;
-        Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-        List<Address> addresses=null;
-        try {
-            addresses = gcd.getFromLocation(location.getLatitude(), location
-                    .getLongitude(), 5);
-            if (addresses.size() > 0)
-                System.out.println(addresses.get(0).getLocality());
-            cityName=addresses.get(0).getLocality();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String s = location.getLongitude()+","+location.getLatitude() +
-                "\n\n"+addresses.get(0).getAddressLine(0)+","+addresses.get(0).getAddressLine(1)+","
-                +addresses.get(0).getAddressLine(2)+","+addresses.get(0).getAddressLine(3);
-        txtAdd1.setText(s);*/
-
+        Log.v("Google API Callback", "Connection Suspended");
+        Log.v("Code", String.valueOf(i));
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Toast.makeText(getApplicationContext(), "GoogleApiClient connection has failed", Toast.LENGTH_LONG).show();//not able to connect this time only.
-        Log.i(LOG_TAG,"GoogleApiClient connection has failed");
+        Log.v("Google API Callback","Connection Failed");
+        Log.v("Error Code", String.valueOf(connectionResult.getErrorCode()));
+        Toast.makeText(this, "3."+Constants.API_NOT_CONNECTED,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v==delete){
+            mAutocompleteView.setText("");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()){
+            Log.v("Google API","Connecting");
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mGoogleApiClient.isConnected()){
+            Log.v("Google API","Dis-Connecting");
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

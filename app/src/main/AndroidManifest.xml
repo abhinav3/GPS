@@ -4,8 +4,11 @@
 <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
    <!-- By integrating your Android apps with the Google Play Services, you can access Google services, such as Maps, Drive, and Google+.-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,5 +26,10 @@
             </intent-filter>
         </activity>
     </application>
-
+    <meta-data
+        android:name="com.google.android.gms.services"
+        android:value="@integer/google_play_services_version" />
+    <meta-data
+        android:name="com.google.android.gms.API_KEY"
+        android:value="AIzaSyB2839-quK6gJIPTCL-F0c7x-C3Ht8eQeY"/>
 </manifest>
