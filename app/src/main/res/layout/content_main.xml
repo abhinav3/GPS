@@ -12,17 +12,31 @@
     tools:context="com.example.omsairam.gps.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:text="Hello World!"
-        android:id="@+id/txtOutput"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/fetch_address_button"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        />
+        android:text="fetch_address"
+        android:onClick="fetchAddressButtonHandler"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
     <TextView
-        android:text="Hello World!"
-        android:id="@+id/txtAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/location_address_view"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="location_address_view" />
+
+    <TextView
+        android:id="@+id/location_lat_view"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@+id/location_address_view"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:text="location_lat_view" />
 </RelativeLayout>
