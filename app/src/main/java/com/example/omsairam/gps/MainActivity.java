@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,8 +22,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -32,22 +35,30 @@ public class MainActivity extends Activity implements OnItemClickListener {
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
-
-    private static final String API_KEY = "AIzaSyB2839-quK6gJIPTCL-F0c7x-C3Ht8eQeY";
+    private AutoCompleteTextView autoCompView;
+    private static final String API_KEY ="AIzaSyDhFGUWlyd0KsjPQ59ATr-yL0bQKujHmeg";//Key from github
+    /*private static final String API_KEY = "AIzaSyB2839-quK6gJIPTCL-F0c7x-C3Ht8eQeY";*///my key
+    /*ImageView crossButton;*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AutoCompleteTextView autoCompView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
+        autoCompView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
 
         autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_item));
+        /*autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.id.recyclerView));*/
         autoCompView.setOnItemClickListener(this);
+       /* crossButton = (ImageView) findViewById(R.id.cross);*/
     }
 
     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
         String str = (String) adapterView.getItemAtPosition(position);
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Selected Address is:\n"+str, Toast.LENGTH_SHORT).show();
+    }
+
+    public void crossButtonClickHandler(View view){
+        autoCompView.setText("");
     }
 
     public static ArrayList autocomplete(String input) {
