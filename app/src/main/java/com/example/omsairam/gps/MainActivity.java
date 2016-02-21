@@ -59,7 +59,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
         Toast.makeText(this, "Selected Address is:\n"+str, Toast.LENGTH_SHORT).show();
         AddToLoc myClass = new AddToLoc();
         double latitude = myClass.getLocationFromAddress(this, str).latitude;
-        Toast.makeText(this, "Lat,Long is:\n"+myClass.getLocationFromAddress(this, str).getClass().toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Lat,Long is:\n"+myClass.getLocationFromAddress(this, str).toString(), Toast.LENGTH_SHORT).show();
 
     }
 
