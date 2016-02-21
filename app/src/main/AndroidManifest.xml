@@ -29,7 +29,9 @@
     <meta-data
         android:name="com.google.android.gms.services"
         android:value="@integer/google_play_services_version" />
+    <!--from github-->
     <meta-data
         android:name="com.google.android.gms.API_KEY"
-        android:value="AIzaSyB2839-quK6gJIPTCL-F0c7x-C3Ht8eQeY"/>
+        android:value="AIzaSyDhFGUWlyd0KsjPQ59ATr-yL0bQKujHmeg"/>
+    <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCMI5SUqqZr1IrJY8lfcJnfBGTk9DdRVkY"/>
 </manifest>

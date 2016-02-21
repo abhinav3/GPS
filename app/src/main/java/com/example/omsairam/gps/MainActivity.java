@@ -28,6 +28,8 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.omsairam.gps.utility.AddToLoc;
+
 
 public class MainActivity extends Activity implements OnItemClickListener {
 
@@ -55,6 +57,10 @@ public class MainActivity extends Activity implements OnItemClickListener {
     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
         String str = (String) adapterView.getItemAtPosition(position);
         Toast.makeText(this, "Selected Address is:\n"+str, Toast.LENGTH_SHORT).show();
+        AddToLoc myClass = new AddToLoc();
+        double latitude = myClass.getLocationFromAddress(this, str).latitude;
+        Toast.makeText(this, "Lat,Long is:\n"+myClass.getLocationFromAddress(this, str).getClass().toString(), Toast.LENGTH_SHORT).show();
+
     }
 
     public void crossButtonClickHandler(View view){
