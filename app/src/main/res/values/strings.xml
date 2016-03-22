@@ -4,6 +4,8 @@
     <string name="Google_Places_API_for_Android">AIzaSyB2839-quK6gJIPTCL-F0c7x-C3Ht8eQeY</string>
     <string name="Google_Places_API_for_browser">AIzaSyB_FB6yMaypa16M2xD6ct0Q7hh0DlgCoJc</string>
     <string name="autocomplete_hint">Search Place Here</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="google_maps_key"></string>
 </resources>
 
 

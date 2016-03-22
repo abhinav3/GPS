@@ -1,57 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp"
-    android:weightSum="1">
-    <fragment
-        android:id="@+id/mapid"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.google.android.gms.maps.MapFragment"/>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical">
 
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
-        android:layout_marginTop="65dp"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginRight="1dp"
-        android:layout_marginLeft="1dp"
-        android:ems="10"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:singleLine="true"
-        android:background="@drawable/edit_text_style"
-        android:textColorHint="@color/grey"
-        android:hint="@string/autocomplete_hint"
-        android:drawableLeft="@mipmap/ic_action_search_black"
-        android:drawablePadding="9dp"
-        android:textColor="@android:color/primary_text_light"
-        android:text="Please enter your place">
 
-        <requestFocus />
-    </AutoCompleteTextView>
 
-    <ImageView
-        android:id="@+id/cross"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:src="@mipmap/ic_clear_black"
-        android:onClick="crossButtonClickHandler"
-        android:layout_alignTop="@+id/autoCompleteTextView"
-        android:layout_alignRight="@+id/autoCompleteTextView"
-        android:layout_alignEnd="@+id/autoCompleteTextView" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-  <!--  <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:scrollbars="vertical"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/autoCompleteTextView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>-->
 
-</RelativeLayout>
+        <EditText
+            android:layout_width="183dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/TFaddress" />
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:id="@+id/Bsearch"
+            android:layout_gravity="right"
+            android:onClick="onSearch" />
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Map Type"
+            android:id="@+id/Btype"
+            android:layout_gravity="right"
+            android:nestedScrollingEnabled="false"
+            android:onClick="changeType" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools" android:layout_width="342dp"
+            android:layout_height="473dp" android:id="@+id/map" tools:context=".MapsActivity"
+            android:name="com.google.android.gms.maps.SupportMapFragment" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="^"
+                android:id="@+id/Bzoomin"
+                android:onClick="onZoom" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="v"
+                android:id="@+id/Bzoomout"
+                android:layout_gravity="center_vertical"
+                android:onClick="onZoom" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
