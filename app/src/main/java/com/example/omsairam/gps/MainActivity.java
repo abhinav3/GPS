@@ -16,7 +16,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.media.Image;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -29,9 +31,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.omsairam.gps.utility.AddToLoc;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class MainActivity extends Activity implements OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements OnItemClickListener {
 
     private static final String LOG_TAG = "hi";
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
@@ -52,14 +59,31 @@ public class MainActivity extends Activity implements OnItemClickListener {
         /*autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.id.recyclerView));*/
         autoCompView.setOnItemClickListener(this);
        /* crossButton = (ImageView) findViewById(R.id.cross);*/
+        /*SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);*/
     }
+/*
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }
+*/
+
+
+
+
 
     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
         String str = (String) adapterView.getItemAtPosition(position);
         Toast.makeText(this, "Selected Address is:\n"+str, Toast.LENGTH_SHORT).show();
         AddToLoc myClass = new AddToLoc();
         double latitude = myClass.getLocationFromAddress(this, str).latitude;
+        double longitude = myClass.getLocationFromAddress(this, str).longitude;
         Toast.makeText(this, "Lat,Long is:\n"+myClass.getLocationFromAddress(this, str).toString(), Toast.LENGTH_SHORT).show();
+
+
 
     }
 
@@ -118,6 +142,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
         return resultList;
     }
+
+
 
     class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
         private ArrayList resultList;
