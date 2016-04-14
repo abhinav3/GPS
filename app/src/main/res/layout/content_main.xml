@@ -16,8 +16,7 @@
         android:id="@+id/fetch_address_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="fetch_address"
-        android:onClick="fetchAddressButtonHandler"
+        android:text="useless button"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
